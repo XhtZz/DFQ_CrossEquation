@@ -5,4 +5,4 @@ prototxt = ".prototxt"
 caffemodel = ".caffemodel"   
 dfq_caffemodel = ".caffemodel"   
 
-notice:just realize the cross_equation part
+**notice**:just realize the cross_equation part
