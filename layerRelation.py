@@ -57,19 +57,37 @@ def create_relation(net_txt,layer_bottom_count_dict):
         if layer[layer_index].top[0] not in layer_bottom_count_dict or layer_bottom_count_dict[layer[layer_index].top[0]]!=1:
             continue
 
-        if layer[layer_index].type == 'Scale' and layer[layer_index+1].type == 'Convolution' and layer[layer_index+2].type == 'ReLU' :
+        if layer[layer_index].top[0] not in layer_bottom_count_dict or layer_bottom_count_dict[layer[layer_index].top[0]]!=1:
+            continue
+
+        if layer[layer_index].type == 'Scale' and layer[layer_index+1].type == 'Convolution' and layer[layer_index+2].type == 'ReLU' and \
+            layer[layer_index].top[0] == layer[layer_index+1].bottom[0]:
+
             relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+1].name)
-        elif layer[layer_index].type == 'Scale' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Convolution' :
-            relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+2].name)
-        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Scale':
+
+        elif layer[layer_index].type == 'Scale' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Convolution' and \
+            layer[layer_index].top[0] == layer[layer_index+2].bottom[0]:
+
             relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+2].name)
 
-        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Convolution':
+        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Scale' and \
+            layer[layer_index].top[0] == layer[layer_index+2].bottom[0]:
+
             relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+2].name)
 
-        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'InnerProduct':
+        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'Convolution' and \
+            layer[layer_index].top[0] == layer[layer_index+2].bottom[0]:
+
+            relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+2].name)
+
+        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'InnerProduct' and \
+            layer[layer_index].top[0] == layer[layer_index+1].bottom[0]:
+
             relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+1].name)
-        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'InnerProduct':
+
+        elif layer[layer_index].type == 'Convolution' and layer[layer_index+1].type == 'ReLU' and layer[layer_index+2].type == 'InnerProduct' and \
+            layer[layer_index].top[0] == layer[layer_index+2].bottom[0]:
+
             relation_dict[layer[layer_index].name] = Relation(layer[layer_index].name, layer[layer_index+2].name)
 
     return list(relation_dict.values())
